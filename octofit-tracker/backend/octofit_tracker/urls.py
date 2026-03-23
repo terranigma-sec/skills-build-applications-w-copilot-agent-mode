@@ -29,12 +29,19 @@ router.register(r'leaderboard', views.LeaderboardViewSet)
 
 @api_view(['GET'])
 def api_root(request, format=None):
+    import os
+    codespace_name = os.environ.get('CODESPACE_NAME')
+    if codespace_name:
+        base_url = f"https://{codespace_name}-8000.app.github.dev/api/"
+    else:
+        # fallback to request.build_absolute_uri for localhost
+        base_url = request.build_absolute_uri('/api/')
     return Response({
-        'users': request.build_absolute_uri('users/'),
-        'teams': request.build_absolute_uri('teams/'),
-        'activities': request.build_absolute_uri('activities/'),
-        'workouts': request.build_absolute_uri('workouts/'),
-        'leaderboard': request.build_absolute_uri('leaderboard/'),
+        'users': f"{base_url}users/",
+        'teams': f"{base_url}teams/",
+        'activities': f"{base_url}activities/",
+        'workouts': f"{base_url}workouts/",
+        'leaderboard': f"{base_url}leaderboard/",
     })
 
 urlpatterns = [
